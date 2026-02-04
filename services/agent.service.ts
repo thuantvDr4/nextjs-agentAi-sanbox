@@ -8,7 +8,7 @@ class AgentService {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                input: "Search AI agents trends 2025 and summarize",
+                input: "Search AI agents trends 2025 and summarize 123",
             })
         });
         return handlerFetch(res as any)

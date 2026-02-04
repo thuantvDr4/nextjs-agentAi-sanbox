@@ -14,10 +14,12 @@ export const POST = async (req: Request)=>{
        }
        // quan trong
        clearMemory();
+
        const result = await runAgent(input);
        return  NextResponse.json({
            success: true,
-           result
+           agent: result,
+           metadata: {}
        },{status: 200})
    } catch (e:any) {
         return NextResponse.json({

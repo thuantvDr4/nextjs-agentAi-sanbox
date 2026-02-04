@@ -9,8 +9,10 @@ const memory: MemoryItem[] = [];
 export function saveMemory(memoryItem: MemoryItem) {
     return memory.push(memoryItem)
 }
-export const getMemory = () => {
-    return memory;
+export const getMemory = ():Promise<MemoryItem[]> => {
+    return new Promise((resolve, reject) => {
+        resolve(memory)
+    });
 }
 
 export const clearMemory = () => {
