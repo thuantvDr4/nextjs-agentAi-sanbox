@@ -1,4 +1,4 @@
-// LLM:  bo nao của agent
+// LLM:  bo nao của agents
 
 import {MemoryItem} from "@/lib/agent/memory";
 

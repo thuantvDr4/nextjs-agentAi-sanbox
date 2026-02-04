@@ -29,6 +29,6 @@ export const runAgent =async (input:string) => {
                 content: summary as string
             })
         }
-        return getMemory()
     }
+        return getMemory()
 }
