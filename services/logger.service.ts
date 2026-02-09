@@ -8,7 +8,7 @@ export const logRequest = (config: any) => {
             config.method?.toUpperCase(),
             config.baseURL + config.url,
             "%c[PAYLOAD]",
-            config.params || config.data,
+            config.params || config.data || config.body,
         );
     }
     return config;

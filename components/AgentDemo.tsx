@@ -4,8 +4,9 @@ import {agentService} from "@/services/agent.service";
 
 const AgentDemo = () => {
 
-    const runAgent = async()=>{
-        const res = await  agentService.run()
+    const runAgent = async () => {
+        const input = 'Search AI agents trends 2025 and summarize'
+        const res = await agentService.run(input)
         console.log('::[agentService]::', res)
     }
     return (
