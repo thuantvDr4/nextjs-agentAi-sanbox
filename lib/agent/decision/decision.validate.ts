@@ -1,5 +1,6 @@
-import {DecisionOutput, MemoryItem} from "@/types/agent";
 import {DecisionError} from "@/lib/agent/decision/decision.error";
+import {DecisionOutput} from "@/lib/agent/decision/decision.schema";
+import {MemoryItem} from "@/types/agent";
 
 export const decisionValidateLogic = (
     decision: DecisionOutput,
@@ -14,5 +15,5 @@ export const decisionValidateLogic = (
     if (decision.action === 'DONE' && !hasSummary) {
         throw new DecisionError('LOGIC_ERROR', 'Cannot DONE before SUMMARY');
     }
-    
+
 }

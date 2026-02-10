@@ -8,6 +8,7 @@ import {
 import {searchTool, summarizeTool} from "@/lib/agent/tools";
 import {AgentStep} from "@/types/agent";
 import {DecisionTrace} from "@/lib/agent/trace/decision.trace";
+import {decisionVoter} from "@/lib/agent/decision/decisionVoter";
 
 export const runAgent = async (input: string) => {
     let step = 0
@@ -35,13 +36,30 @@ export const runAgent = async (input: string) => {
 
 
         // ---run LLM with retry: LV 2
-        const {action, reason, params} = await decideActionPromptWithRetry({
+        // const {action, reason, params} = await decideActionPromptWithRetry({
+        //     goal: input,
+        //     memory,
+        //     currentStep: step,
+        //     maxSteps: MAX_STEP,
+        //     previousActions: steps?.map(x => x.action)
+        // }, decisionTraces);
+
+        const _input = {
             goal: input,
             memory,
             currentStep: step,
             maxSteps: MAX_STEP,
             previousActions: steps?.map(x => x.action)
-        }, decisionTraces);
+        }
+
+        // ---run LLM with Multi-Agent Decision (Voting) : LV 3
+        const decisions = await Promise.all([
+            decideActionPromptWithRetry(_input, decisionTraces),
+            decideActionPromptWithRetry(_input, decisionTraces),
+            decideActionPromptWithRetry(_input, decisionTraces),
+        ]);
+        //--run voting
+        const {action, reason, params} = decisionVoter(decisions);
 
         const decisionMs = Date.now() - decisionStart;
 

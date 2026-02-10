@@ -22,7 +22,7 @@ export function mockLLMRaw_WithText() {
   `;
 }
 
-export function mockLLMRaw_Bad() {
+export async function mockLLMRaw_Bad() {
     return `
   {
     "action": "THINK",

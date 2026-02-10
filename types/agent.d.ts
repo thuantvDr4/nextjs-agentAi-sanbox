@@ -16,10 +16,6 @@ export type DecisionInput = {
     steps: AgentStep[]
 }
 
-export type DecisionOutput = {
-    action: AgentAction;
-    reason: string;
-}
 
 export type MemoryItem = {
     type: "SEARCH_RESULT" | "SUMMARY";
@@ -34,4 +30,10 @@ export type DecisionState = {
     previousActions: AgentAction[]
 }
 
-export type DecisionErrorType = "INVALID_JSON" | "SCHEMA_VIOLATION" | "LOGIC_ERROR"
+export type DecisionErrorType = "INVALID_JSON" | "SCHEMA_VIOLATION" | "LOGIC_ERROR" | "BUDGET_EXCEEDED"
+
+export interface LLMResult {
+    raw: string
+    durationMs: number
+    estimatedCost: number
+}

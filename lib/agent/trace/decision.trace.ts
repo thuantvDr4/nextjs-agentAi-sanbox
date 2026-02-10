@@ -1,4 +1,5 @@
-import {DecisionOutput} from "@/types/agent";
+import {DecisionOutput} from "@/lib/agent/decision/decision.schema";
+
 
 export interface DecisionTrace {
     step: number

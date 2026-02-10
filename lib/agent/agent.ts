@@ -8,6 +8,8 @@ import {buildCorrectionPrompt} from "@/lib/agent/decision/decisionCorrection.pro
 import {DecisionError} from "@/lib/agent/decision/decision.error";
 import {decisionValidateLogic} from "@/lib/agent/decision/decision.validate";
 import {DecisionTrace} from "@/lib/agent/trace/decision.trace";
+import {AgentBudget, AgentUsage} from "@/lib/agent/budget/agent.budget";
+import {validateBudget} from "@/lib/agent/budget/validateBudget";
 
 
 export const decideAction = (input: string, memory: MemoryItem[]): AgentAction => {
@@ -48,9 +50,10 @@ export const decideActionWithLLM = async (input: DecisionInput): Promise<Decisio
  **/
 export const decideActionWithLLMByPrompt = async (state: DecisionState): Promise<DecisionOutput> => {
     const prompt = buildDecisionPrompt(state);
-    const raw = await callLLM(prompt);
+    const {raw} = await callLLM(prompt);
     return parseDecision(raw)
 }
+
 
 /***
  1. tạo prompt
@@ -63,15 +66,41 @@ export const decideActionPromptWithRetry = async (
     state: DecisionState,
     trace: DecisionTrace[]
 ): Promise<DecisionOutput> => {
+
+    // mock agent usage
+    const usage: AgentUsage = {
+        totalMs: 0,
+        llmCalls: 0,
+        estimatedCost: 0
+    }
+
+    //--mock budget
+    const budget: AgentBudget = {
+        maxTotalMs: 5000,
+        maxLLMCalls: 5,
+        maxEstimatedCost: 0.02
+    }
+
     let prompt = buildDecisionPrompt(state);
+
+
     for (let attempt = 1; attempt <= MAX_RETRY; attempt++) {
-        const timestamp = new Date().toISOString()
+        const timestamp = new Date().toISOString();
         try {
-            const raw = await callLLM(prompt);
+            const {raw, estimatedCost, durationMs} = await callLLM(prompt);
+
+            //--do budget cost
+            usage.totalMs += durationMs;
+            usage.llmCalls += 1;
+            usage.estimatedCost += estimatedCost
+            //---validate budget cost
+            validateBudget(usage, budget)
+
+            //----get decision
             const decision = parseDecision(raw);
             // --validate decision
             decisionValidateLogic(decision, state?.memory)
-
+            
             //---for trace
             trace.push({
                 step: state.currentStep,
